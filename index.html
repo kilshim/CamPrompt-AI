@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CamPrompt AI - 3D 카메라 앵글 빌더</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      /* Custom scrollbar for a cleaner UI */
+      ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #1e293b;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #475569;
+        border-radius: 4px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #64748b;
+      }
+    </style>
+  <script type="importmap">
+{
+  "imports": {
+    "react": "https://esm.sh/react@^19.2.3",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
+    "react/": "https://esm.sh/react@^19.2.3/",
+    "lucide-react": "https://esm.sh/lucide-react@^0.562.0",
+    "@react-three/drei": "https://esm.sh/@react-three/drei@^10.7.7",
+    "three": "https://esm.sh/three@^0.182.0",
+    "@react-three/fiber": "https://esm.sh/@react-three/fiber@^9.5.0"
+  }
+}
+</script>
+</head>
+  <body class="bg-slate-950 text-slate-100 overflow-hidden">
+    <div id="root"></div>
+  </body>
+</html>

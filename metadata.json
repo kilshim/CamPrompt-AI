@@ -1,0 +1,5 @@
+{
+  "name": "CamPrompt AI",
+  "description": "사용자가 설정한 시각적 구도에 맞춰 Stable Diffusion, Midjourney 등을 위한 텍스트 프롬프트를 생성해주는 인터랙티브 3D 카메라 앵글 빌더입니다.",
+  "requestFramePermissions": []
+}
