@@ -43,7 +43,7 @@ interface PresetButtonProps {
 const PresetButton: React.FC<PresetButtonProps> = ({ preset, onApply }) => (
   <button
     onClick={() => onApply(preset)}
-    className="px-2 py-1 text-xs font-medium rounded bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition-colors break-keep"
+    className="px-2 py-1.5 text-xs font-medium rounded bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition-colors break-keep active:bg-slate-600"
   >
     {preset.label}
   </button>
@@ -71,25 +71,26 @@ export const ControlsSidebar: React.FC<ControlsSidebarProps> = ({
   };
 
   return (
-    <div className="w-80 flex-shrink-0 bg-slate-900 border-r border-slate-800 flex flex-col h-full overflow-y-auto">
-      <div className="p-4 border-b border-slate-800">
-        <h1 className="text-xl font-bold bg-gradient-to-r from-blue-400 to-indigo-500 bg-clip-text text-transparent flex items-center gap-2">
-          <Camera className="w-6 h-6 text-blue-500" />
+    <div className="w-full md:w-80 flex-shrink-0 bg-slate-900 border-t border-r-0 md:border-t-0 md:border-r border-slate-800 flex flex-col h-full overflow-y-auto">
+      {/* Header - Sticky on mobile to know where controls are */}
+      <div className="p-3 sm:p-4 border-b border-slate-800 sticky top-0 bg-slate-900/95 backdrop-blur z-10">
+        <h1 className="text-lg sm:text-xl font-bold bg-gradient-to-r from-blue-400 to-indigo-500 bg-clip-text text-transparent flex items-center gap-2">
+          <Camera className="w-5 h-5 sm:w-6 sm:h-6 text-blue-500" />
           CamPrompt AI
         </h1>
-        <p className="text-slate-500 text-xs mt-1">인터랙티브 3D 프롬프트 빌더</p>
+        <p className="text-slate-500 text-[10px] sm:text-xs mt-0.5">인터랙티브 3D 프롬프트 빌더</p>
       </div>
 
-      <div className="p-4 space-y-8">
+      <div className="p-3 sm:p-4 space-y-6 sm:space-y-8 pb-8">
         
         {/* Horizontal Control */}
         <div className="space-y-3">
           <div className="flex items-center justify-between text-sm text-slate-300">
             <div className="flex items-center gap-2">
               <Rotate3D className="w-4 h-4 text-blue-400" />
-              <span>수평 회전 (Orbit)</span>
+              <span className="font-medium">수평 회전</span>
             </div>
-            <span className="font-mono text-blue-400">{Math.round(cameraState.azimuth)}°</span>
+            <span className="font-mono text-blue-400 font-bold">{Math.round(cameraState.azimuth)}°</span>
           </div>
           <input 
             type="range" 
@@ -97,7 +98,7 @@ export const ControlsSidebar: React.FC<ControlsSidebarProps> = ({
             max="360" 
             value={cameraState.azimuth} 
             onChange={(e) => updateCamera('azimuth', parseInt(e.target.value))}
-            className="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-blue-500"
+            className="w-full h-3 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-blue-500 touch-action-none"
           />
           <div className="flex flex-wrap gap-2">
             {PRESETS.horizontal.map(p => <PresetButton key={p.label} preset={p} onApply={applyPreset} />)}
@@ -109,9 +110,9 @@ export const ControlsSidebar: React.FC<ControlsSidebarProps> = ({
           <div className="flex items-center justify-between text-sm text-slate-300">
             <div className="flex items-center gap-2">
               <Move className="w-4 h-4 text-green-400" />
-              <span>수직 회전 (Tilt)</span>
+              <span className="font-medium">수직 회전</span>
             </div>
-            <span className="font-mono text-green-400">{Math.round(cameraState.polar)}°</span>
+            <span className="font-mono text-green-400 font-bold">{Math.round(cameraState.polar)}°</span>
           </div>
           <input 
             type="range" 
@@ -119,7 +120,7 @@ export const ControlsSidebar: React.FC<ControlsSidebarProps> = ({
             max="179" 
             value={cameraState.polar} 
             onChange={(e) => updateCamera('polar', parseInt(e.target.value))}
-            className="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-green-500"
+            className="w-full h-3 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-green-500 touch-action-none"
           />
           <div className="flex flex-wrap gap-2">
              {PRESETS.vertical.map(p => <PresetButton key={p.label} preset={p} onApply={applyPreset} />)}
@@ -131,9 +132,9 @@ export const ControlsSidebar: React.FC<ControlsSidebarProps> = ({
           <div className="flex items-center justify-between text-sm text-slate-300">
              <div className="flex items-center gap-2">
               <Move className="w-4 h-4 rotate-45 text-purple-400" />
-              <span>거리 (Zoom)</span>
+              <span className="font-medium">거리 (Zoom)</span>
             </div>
-            <span className="font-mono text-purple-400">{cameraState.distance}m</span>
+            <span className="font-mono text-purple-400 font-bold">{cameraState.distance}m</span>
           </div>
           <input 
             type="range" 
@@ -142,7 +143,7 @@ export const ControlsSidebar: React.FC<ControlsSidebarProps> = ({
             step="0.5"
             value={cameraState.distance} 
             onChange={(e) => updateCamera('distance', parseFloat(e.target.value))}
-            className="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-purple-500"
+            className="w-full h-3 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-purple-500 touch-action-none"
           />
            <div className="flex flex-wrap gap-2">
              {PRESETS.distance.map(p => <PresetButton key={p.label} preset={p} onApply={applyPreset} />)}
@@ -156,12 +157,12 @@ export const ControlsSidebar: React.FC<ControlsSidebarProps> = ({
            <div className="flex items-center justify-between text-sm text-slate-300">
             <div className="flex items-center gap-2">
               <ImageIcon className="w-4 h-4 text-yellow-400" />
-              <span>레퍼런스 이미지 (오버레이)</span>
+              <span className="font-medium">레퍼런스 이미지</span>
             </div>
           </div>
           
           <div className="relative">
-            <label className="flex flex-col items-center justify-center w-full h-24 border-2 border-slate-700 border-dashed rounded-lg cursor-pointer bg-slate-800 hover:bg-slate-750 transition-colors">
+            <label className="flex flex-col items-center justify-center w-full h-20 sm:h-24 border-2 border-slate-700 border-dashed rounded-lg cursor-pointer bg-slate-800 hover:bg-slate-750 transition-colors active:bg-slate-700">
               <div className="flex flex-col items-center justify-center pt-5 pb-6">
                 <Upload className="w-6 h-6 mb-2 text-slate-400" />
                 <p className="text-xs text-slate-400">클릭하여 이미지 업로드</p>
@@ -183,11 +184,11 @@ export const ControlsSidebar: React.FC<ControlsSidebarProps> = ({
                   step="0.05"
                   value={bgOpacity}
                   onChange={(e) => setBgOpacity(parseFloat(e.target.value))}
-                  className="w-full h-1.5 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-yellow-500"
+                  className="w-full h-3 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-yellow-500 touch-action-none"
                />
               <button 
                 onClick={() => setBgImage(null)}
-                className="w-full py-1 text-xs text-red-400 hover:text-red-300 border border-red-900/50 bg-red-900/20 rounded mt-2"
+                className="w-full py-1.5 text-xs text-red-400 hover:text-red-300 border border-red-900/50 bg-red-900/20 rounded mt-2 active:bg-red-900/40"
               >
                 이미지 제거
               </button>
@@ -197,7 +198,7 @@ export const ControlsSidebar: React.FC<ControlsSidebarProps> = ({
 
       </div>
       
-      <div className="mt-auto p-4 border-t border-slate-800 text-xs text-slate-600 text-center">
+      <div className="mt-auto p-4 border-t border-slate-800 text-xs text-slate-600 text-center pb-8 sm:pb-4">
         <a 
           href="https://xn--design-hl6wo12cquiba7767a.com/" 
           target="_blank" 

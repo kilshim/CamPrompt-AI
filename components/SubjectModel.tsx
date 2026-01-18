@@ -2,24 +2,6 @@ import React from 'react';
 import { ThreeElements } from '@react-three/fiber';
 import { Edges } from '@react-three/drei';
 
-// Augment the global JSX namespace to include Three.js elements
-// Explicitly listing elements to avoid TypeScript errors with 'extends ThreeElements'
-declare global {
-  namespace JSX {
-    interface IntrinsicElements {
-      group: any;
-      mesh: any;
-      capsuleGeometry: any;
-      meshStandardMaterial: any;
-      sphereGeometry: any;
-      boxGeometry: any;
-      cylinderGeometry: any;
-      coneGeometry: any;
-      meshBasicMaterial: any;
-    }
-  }
-}
-
 interface SubjectModelProps {
   showMannequin?: boolean;
 }

@@ -5,23 +5,6 @@ import * as THREE from 'three';
 import { SubjectModel } from './SubjectModel';
 import { CameraState } from '../types';
 
-// Augment the global JSX namespace to include Three.js elements
-// Explicitly listing elements to avoid TypeScript errors with 'extends ThreeElements'
-declare global {
-  namespace JSX {
-    interface IntrinsicElements {
-      ambientLight: any;
-      directionalLight: any;
-      planeGeometry: any;
-      mesh: any;
-      meshBasicMaterial: any;
-      // Re-declare elements potentially used by child components if needed for broader scope, 
-      // though SubjectModel.tsx handles its own.
-      group: any; 
-    }
-  }
-}
-
 interface Viewer3DProps {
   cameraState: CameraState;
   onCameraChange: (newState: Partial<CameraState>) => void;

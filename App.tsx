@@ -83,53 +83,75 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className="flex h-screen w-screen bg-slate-950 text-slate-100 font-sans">
+    <div className="flex flex-col md:flex-row h-screen w-screen bg-slate-950 text-slate-100 font-sans overflow-hidden">
       
-      {/* Left Sidebar */}
-      <ControlsSidebar 
-        cameraState={cameraState}
-        updateCamera={handleControlUpdate}
-        bgImage={bgImage}
-        setBgImage={setBgImage}
-        bgOpacity={bgOpacity}
-        setBgOpacity={setBgOpacity}
-      />
+      {/* 
+        Mobile Layout Strategy:
+        - Order 1: 3D Viewer + Prompt (Top, ~66%)
+        - Order 2: Controls Sidebar (Bottom, ~34%)
+        - This gives the visual workspace (2/3) priority over controls (1/3).
+      */}
 
-      {/* Main Content Area */}
-      <div className="flex-1 flex flex-col relative h-full">
+      {/* Sidebar Wrapper */}
+      <div className="order-2 md:order-1 w-full md:w-auto flex-none h-[34%] md:h-full relative z-20 overflow-hidden border-t md:border-t-0 border-slate-800">
+        <ControlsSidebar 
+          cameraState={cameraState}
+          updateCamera={handleControlUpdate}
+          bgImage={bgImage}
+          setBgImage={setBgImage}
+          bgOpacity={bgOpacity}
+          setBgOpacity={setBgOpacity}
+        />
+      </div>
+
+      {/* Main Content Area (3D Viewer + Prompt) */}
+      <div className="order-1 md:order-2 w-full h-[66%] md:h-full md:flex-1 flex flex-col relative z-10">
         
-        {/* Top Bar: Prompt Display */}
-        {/* Z-Index updated to 50 to ensure it sits ABOVE the 3D canvas (z-10) */}
-        <div className="absolute top-4 left-4 right-4 z-50 flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between pointer-events-none">
-          <div className="bg-slate-900/90 backdrop-blur-md border border-slate-700 p-4 rounded-xl shadow-2xl max-w-2xl w-full pointer-events-auto">
-             <div className="flex items-center gap-2 mb-2">
-                <Terminal className="w-4 h-4 text-blue-400" />
-                <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">생성된 프롬프트 (GENERATED PROMPT)</span>
+        {/* Prompt Display Area */}
+        <div className={`
+            z-30 flex flex-col gap-2 transition-all shrink-0
+            relative w-full bg-slate-900 border-b border-slate-800
+            md:absolute md:top-4 md:left-4 md:right-4 md:w-auto md:bg-transparent md:border-0 md:pointer-events-none
+        `}>
+          <div className={`
+             bg-slate-900/95 backdrop-blur-md 
+             p-3 sm:p-4 w-full pointer-events-auto flex flex-col gap-2
+             md:border md:border-slate-700 md:rounded-xl md:shadow-2xl
+          `}>
+             
+             {/* Header Row */}
+             <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Terminal className="w-3 h-3 sm:w-4 sm:h-4 text-blue-400" />
+                  <span className="text-[10px] sm:text-xs font-bold text-slate-400 uppercase tracking-wider">GENERATED PROMPT</span>
+                </div>
+                {/* Copy Button */}
+                <button 
+                  onClick={handleCopy}
+                  className="flex items-center gap-1.5 bg-blue-600 hover:bg-blue-500 text-white px-3 py-1 rounded-md text-xs font-medium transition-all shadow-lg shadow-blue-900/20 active:scale-95 cursor-pointer"
+                >
+                  {copied ? <CheckCircle className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
+                  {copied ? '복사됨' : '복사'}
+                </button>
              </div>
-             <div className="font-mono text-sm sm:text-base text-slate-100 break-words mb-3 select-all">
+
+             {/* Prompt Text - Flexible height with max constraint */}
+             <div className="font-mono text-xs sm:text-base text-slate-100 break-words select-all max-h-24 md:max-h-32 overflow-y-auto">
                {promptData.fullPrompt}
              </div>
-             <div className="flex gap-2">
-               <button 
-                onClick={handleCopy}
-                className="flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-white px-4 py-1.5 rounded-lg text-sm font-medium transition-all shadow-lg shadow-blue-900/20 active:scale-95 cursor-pointer z-50"
-               >
-                 {copied ? <CheckCircle className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
-                 {copied ? '복사됨!' : '프롬프트 복사'}
-               </button>
-               <div className="hidden sm:flex items-center gap-2 text-xs text-slate-500 px-3 border-l border-slate-700">
-                  <span className="bg-slate-800 px-2 py-0.5 rounded text-slate-300">{promptData.vertical}</span>
-                  <span className="bg-slate-800 px-2 py-0.5 rounded text-slate-300">{promptData.horizontal}</span>
-                  <span className="bg-slate-800 px-2 py-0.5 rounded text-slate-300">{promptData.distance}</span>
-               </div>
+
+             {/* Chips (Hidden on very small screens to save space) */}
+             <div className="hidden sm:flex items-center gap-2 text-xs text-slate-500 pt-2 border-t border-slate-800">
+                <span className="bg-slate-800 px-2 py-0.5 rounded text-slate-300 whitespace-nowrap">{promptData.vertical}</span>
+                <span className="bg-slate-800 px-2 py-0.5 rounded text-slate-300 whitespace-nowrap">{promptData.horizontal}</span>
+                <span className="bg-slate-800 px-2 py-0.5 rounded text-slate-300 whitespace-nowrap">{promptData.distance}</span>
              </div>
           </div>
         </div>
 
         {/* 3D Viewer Container */}
-        <div className="relative flex-1 bg-gradient-to-b from-slate-900 to-slate-950 overflow-hidden flex items-center justify-center">
+        <div className="relative flex-1 bg-gradient-to-b from-slate-900 to-slate-950 overflow-hidden flex items-center justify-center min-h-0">
           
-          {/* Canvas (z-10) - Handles 3D Scene and Billboard Image */}
           <div className="absolute inset-0 z-10">
              <Viewer3D 
                 cameraState={cameraState} 
@@ -142,20 +164,20 @@ const App: React.FC = () => {
           </div>
 
           {/* Bottom Floating Metadata */}
-          <div className="absolute bottom-4 left-4 right-4 pointer-events-none flex justify-center sm:justify-end z-50">
-            <div className="bg-slate-900/80 backdrop-blur-sm border border-slate-800 rounded-lg px-4 py-2 flex items-center gap-6 text-xs font-mono shadow-xl">
+          <div className="absolute bottom-2 right-2 sm:bottom-4 sm:right-4 pointer-events-none flex z-50">
+            <div className="bg-slate-900/80 backdrop-blur-sm border border-slate-800 rounded-lg px-3 py-1.5 flex items-center gap-4 text-[10px] sm:text-xs font-mono shadow-xl">
                <div className="flex flex-col items-center">
-                 <span className="text-slate-500">수평</span>
+                 <span className="text-slate-500">H</span>
                  <span className="text-blue-400">{Math.round(cameraState.azimuth)}°</span>
                </div>
-               <div className="w-px h-6 bg-slate-700" />
+               <div className="w-px h-4 bg-slate-700" />
                <div className="flex flex-col items-center">
-                 <span className="text-slate-500">수직</span>
+                 <span className="text-slate-500">V</span>
                  <span className="text-green-400">{Math.round(cameraState.polar)}°</span>
                </div>
-               <div className="w-px h-6 bg-slate-700" />
+               <div className="w-px h-4 bg-slate-700" />
                <div className="flex flex-col items-center">
-                 <span className="text-slate-500">거리</span>
+                 <span className="text-slate-500">D</span>
                  <span className="text-purple-400">{cameraState.distance}m</span>
                </div>
             </div>
